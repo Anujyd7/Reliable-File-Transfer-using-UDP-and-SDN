@@ -330,7 +330,7 @@ def send_file(filename, server_ip, server_port):
         time.monotonic() - transfer_start
     )
 
-    # ======================================
+# ======================================
     # FINISH HANDSHAKE
     # ======================================
 
@@ -353,28 +353,44 @@ def send_file(filename, server_ip, server_port):
             server_address
         )
 
-        try:
+        # Wait for DONE while ignoring delayed or duplicate ACKs.
+        deadline = time.monotonic() + ACK_TIMEOUT
 
-            response, address = client.recvfrom(
-                MAX_DATAGRAM_SIZE
-            )
+        while True:
+            remaining = deadline - time.monotonic()
+
+            if remaining <= 0:
+                break
+
+            client.settimeout(remaining)
+
+            try:
+                response, address = client.recvfrom(
+                    MAX_DATAGRAM_SIZE
+                )
+
+            except socket.timeout:
+                break
 
             if address != server_address:
                 continue
 
-            (
-                packet_type,
-                received_id,
-                sequence,
-                received_total,
-                payload
-            ) = decode_packet(response)
+            try:
+                (
+                    packet_type,
+                    received_id,
+                    sequence,
+                    received_total,
+                    payload
+                ) = decode_packet(response)
+
+            except ValueError:
+                continue
 
             if received_id != transfer_id:
                 continue
 
             if packet_type == ERROR:
-
                 raise RuntimeError(
                     payload.decode(errors="replace")
                 )
@@ -383,24 +399,25 @@ def send_file(filename, server_ip, server_port):
                 packet_type == DONE
                 and received_total == total_packets
             ):
-
                 completed = True
                 break
 
-        except socket.timeout:
+            # Ignore delayed ACKs and unrelated packets.
+            continue
 
-            print(
-                f"[CLIENT] Waiting for server completion "
-                f"({attempt + 1}/{MAX_RETRIES})"
-            )
+        if completed:
+            break
+
+        print(
+            f"[CLIENT] Waiting for server completion "
+            f"({attempt + 1}/{MAX_RETRIES})"
+        )
 
     client.close()
 
     if not completed:
-
         print("[CLIENT] ERROR: Completion confirmation missing")
         return False
-
     # ======================================
     # PERFORMANCE SUMMARY
     # ======================================

@@ -257,25 +257,45 @@ The implemented configuration uses a window size of 5 and an acknowledgement tim
 
 ## 11. Performance Evaluation
 
-The following measurements were recorded during testing.
+The application was evaluated using Basic UDP and Reliable UDP under different file sizes and network conditions.
+
+### Performance Results
 
 | File Size | Network Condition | Transfer Time (s) | Throughput (Mbps) | Retransmissions | Integrity |
 |---|---|---:|---:|---:|---|
-| 5 MB | Normal | 14.532 | 2.886 | 0 | PASSED |
-| 20 MB | Normal | 57.655 | 2.910 | 0 | PASSED |
-| 50 MB | Normal | 151.616 | 2.766 | 0 | PASSED |
-| 50 MB | Link Failure | 405.855 | 1.033 | 36 | PASSED |
+| 5 MB | Basic UDP - Normal | 1.585 | 26.470 | 0 | FAILED |
+| 5 MB | Reliable UDP - Normal | 14.532 | 2.886 | 0 | PASSED |
+| 20 MB | Basic UDP - Normal | 6.920 | 24.244 | 0 | FAILED |
+| 20 MB | Reliable UDP - Normal | 59.524 | 2.819 | 0 | PASSED |
+| 50 MB | Basic UDP - Normal | 15.957 | 26.285 | 0 | PASSED |
+| 50 MB | Reliable UDP - Normal | 133.217 | 3.148 | 0 | PASSED |
+| 50 MB | Reliable UDP - Link Failure | 405.855 | 1.033 | 36 | PASSED |
+
+**Note:** Basic UDP transfer time represents the sender-side transmission duration, whereas Reliable UDP transfer time represents the acknowledged transfer duration. Therefore, these timings are not directly equivalent. Basic UDP does not use application-level acknowledgements or retransmissions.
+
+### Observations
+
+- Basic UDP achieved higher sending throughput but lost packets in the 5 MB and 20 MB tests.
+- Reliable UDP successfully reconstructed and verified all tested files.
+- The 50 MB Basic UDP test completed successfully, demonstrating that packet loss is dependent on network conditions.
+- During the 50 MB link-failure test, Reliable UDP recorded 36 retransmissions and maintained file integrity.
+- The link-failure test took longer because of the network disruption and recovery process.
 
 ### Performance Graphs
 
-The `results/graphs/` directory contains:
+The generated graphs are available in `results/graphs/`.
 
-- Transfer time comparison
-- Throughput comparison
-- Retransmission comparison
-- Integrity verification results
+#### Transfer Time
+![Transfer Time](results/graphs/transfer_time.png)
 
-The measurements show that the 50 MB link-failure test took longer and recorded additional retransmissions compared with the normal 50 MB test.
+#### Throughput
+![Throughput](results/graphs/throughput.png)
+
+#### Retransmissions
+![Retransmissions](results/graphs/retransmissions.png)
+
+#### Integrity Verification
+![Integrity Verification](results/graphs/integrity_verification.png)
 
 ## 12. File Integrity Verification
 

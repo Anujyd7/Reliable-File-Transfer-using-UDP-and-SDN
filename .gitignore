@@ -34,3 +34,8 @@ Thumbs.db
 htmlcov/
 # Generated execution logs
 logs/*.log
+# Generated baseline test files
+test_files/baseline_*.bin
+
+# Generated baseline logs
+logs/baseline_*.log
