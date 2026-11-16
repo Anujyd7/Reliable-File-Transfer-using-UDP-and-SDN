@@ -191,7 +191,7 @@ h1 ping -c 5 10.0.0.2
 At the `mininet>` prompt:
 
 ```bash
-h2 sh -c 'cd /home/pes1ug25am050/Reliable-File-Transfer-SDN && PYTHONPATH=/home/pes1ug25am050/Reliable-File-Transfer-SDN python3 -u -m server.udp_server > logs/server_mininet.log 2>&1 &'
+h2 sh -c 'cd $HOME/Reliable-File-Transfer-SDN && PYTHONPATH=$HOME/Reliable-File-Transfer-SDN python3 -u -m server.udp_server > logs/server_mininet.log 2>&1 &'
 ```
 
 ### Transfer a File
@@ -199,7 +199,7 @@ h2 sh -c 'cd /home/pes1ug25am050/Reliable-File-Transfer-SDN && PYTHONPATH=/home/
 At the `mininet>` prompt:
 
 ```bash
-h1 sh -c 'cd /home/pes1ug25am050/Reliable-File-Transfer-SDN && PYTHONPATH=/home/pes1ug25am050/Reliable-File-Transfer-SDN python3 -m client.udp_client test_files/sample.txt --host 10.0.0.2'
+h1 sh -c 'cd $HOME/Reliable-File-Transfer-SDN && PYTHONPATH=$HOME/Reliable-File-Transfer-SDN python3 -m client.udp_client test_files/sample.txt --host 10.0.0.2'
 ```
 
 The client sends the file through the Mininet network. The server reconstructs the file and verifies its integrity.
