@@ -33,7 +33,7 @@ The project contains four major components:
 
 ### Network Topology
 
-The Mininet topology consists of two hosts and four OpenFlow switches.
+The Mininet topology consists of three hosts and four OpenFlow switches. Hosts h1 and h3 act as UDP clients, while h2 runs the UDP server. The server supports simultaneous transfers from multiple clients.
 
 **Primary path:**
 
@@ -43,7 +43,7 @@ The Mininet topology consists of two hosts and four OpenFlow switches.
 
 `h1 → s1 → s3 → s4 → h2`
 
-When the primary path fails, the controller selects the backup path. When the failed link is restored, it reinstalls the primary forwarding path.
+When the primary path fails, the controller selects the backup path. When the failed link is restored, it reinstalls the primary forwarding path. Both clients are supported on the primary and backup routes.
 
 ## 4. Technologies Used
 
@@ -281,6 +281,37 @@ The application was evaluated using Basic UDP and Reliable UDP under different f
 - During the 50 MB link-failure test, Reliable UDP recorded 36 retransmissions and maintained file integrity.
 - The link-failure test took longer because of the network disruption and recovery process.
 
+### Simultaneous Client Testing
+
+Two clients were tested concurrently against the same UDP server.
+
+| Client | File Size | Transfer Time (s) | Throughput (Mbps) | Retransmissions | Integrity |
+|---|---:|---:|---:|---:|---|
+| h1 | 5 MB | 18.640 | 2.250 | 0 | PASSED |
+| h3 | 5 MB | 22.110 | 1.897 | 0 | PASSED |
+
+The server recorded two active sessions and reconstructed both files
+using separate transfer IDs and output filenames. Both SHA-256 checks
+matched their respective original files.
+
+### Simultaneous Clients During SDN Link Failure
+
+Two 20 MB transfers were active when the primary link between s1 and s2
+was disconnected. The controller detected the failure and installed
+forwarding rules through the backup path s1 -> s3 -> s4.
+
+| Client | File Size | Transfer Time (s) | Throughput (Mbps) | Retransmissions | Integrity |
+|---|---:|---:|---:|---:|---|
+| h1 | 20 MB | 115.134 | 1.457 | 0 | PASSED |
+| h3 | 20 MB | 128.926 | 1.301 | 12 | PASSED |
+
+Both transfers completed. The server verified both reconstructed files,
+and their SHA-256 hashes matched the originals. The controller log recorded
+the primary link failure and activation of the backup route.
+
+These measurements were collected in a Mininet/VirtualBox environment.
+They represent individual client results, not aggregate throughput.
+
 ### Performance Graphs
 
 The generated graphs are available in `results/graphs/`.
@@ -317,19 +348,19 @@ Matching hashes indicate that the original and received file contents are identi
 
 ## 14. Limitations
 
-- The current implementation is designed around the configured two-host Mininet topology.
-- The server handles transfers using its current transfer-state implementation rather than a demonstrated multi-client concurrent server.
-- Performance measurements depend on the virtual machine and emulated network conditions.
-- Additional congestion and concurrent-client testing can be performed as future enhancements.
-
+- The current topology uses two UDP clients and one UDP server.
+- Performance measurements depend on the virtual machine resources and
+  emulated network conditions.
+- The current timeout and sliding-window parameters are fixed rather than
+  dynamically adjusted.
+- Testing has focused on the configured primary and backup paths and the
+  demonstrated concurrent-client scenarios.
 ## 15. Future Enhancements
 
-- Support multiple simultaneous clients.
+- Support a larger number of simultaneous clients.
 - Implement adaptive timeout and window sizing.
 - Introduce congestion-aware transmission.
-- Add more complex network topologies.
-- Develop a graphical interface for monitoring file transfers and network status.
-
+- Evaluate additional network topologies and failure scenarios.
 ## 16. Conclusion
 
 This project demonstrates reliable file transmission using UDP with application-layer reliability mechanisms and SDN-based network path management.

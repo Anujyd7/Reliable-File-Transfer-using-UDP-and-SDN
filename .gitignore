@@ -39,3 +39,12 @@ test_files/baseline_*.bin
 
 # Generated baseline logs
 logs/baseline_*.log
+
+# Generated simultaneous-client and failover test files
+test_files/client1.bin
+test_files/client2.bin
+test_files/failover_client1.bin
+test_files/failover_client2.bin
+
+# Temporary backup source files
+*_backup.py

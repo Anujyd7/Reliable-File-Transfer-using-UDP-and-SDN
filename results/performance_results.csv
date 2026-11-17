@@ -6,3 +6,7 @@ File Size,Network Condition,Transfer Time (seconds),Throughput (Mbps),Retransmis
 5 MB,Basic UDP - Normal,1.585,26.470,0,FAILED
 20 MB,Basic UDP - Normal,6.920,24.244,0,FAILED
 50 MB,Basic UDP - Normal,15.957,26.285,0,PASSED
+5 MB - h1,Reliable UDP - Simultaneous Clients,18.640,2.250,0,PASSED
+5 MB - h3,Reliable UDP - Simultaneous Clients,22.110,1.897,0,PASSED
+20 MB - h1,Reliable UDP - Simultaneous Clients + Link Failure,115.134,1.457,0,PASSED
+20 MB - h3,Reliable UDP - Simultaneous Clients + Link Failure,128.926,1.301,12,PASSED

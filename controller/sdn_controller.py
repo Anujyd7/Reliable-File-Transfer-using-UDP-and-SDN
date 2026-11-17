@@ -36,6 +36,7 @@ class ReliableTransferController(app_manager.OSKenApp):
 
     HOST1_IP = "10.0.0.1"
     HOST2_IP = "10.0.0.2"
+    HOST3_IP = "10.0.0.3"
 
     def __init__(self, *args, **kwargs):
         super(ReliableTransferController, self).__init__(
@@ -371,30 +372,39 @@ class ReliableTransferController(app_manager.OSKenApp):
         for datapath in self.datapaths.values():
             self.delete_all_flows(datapath)
 
-        # Install forward and reverse rules.
-        for dpid, output_port in forward_rules.items():
+        # Install forwarding rules for both clients.
+        client_ips = [self.HOST1_IP, self.HOST3_IP]
 
-            datapath = self.datapaths.get(dpid)
+        for client_ip in client_ips:
 
-            if datapath is not None:
-                self.add_ipv4_flow(
-                    datapath,
-                    self.HOST1_IP,
-                    self.HOST2_IP,
-                    output_port
-                )
+            for dpid, output_port in forward_rules.items():
+                datapath = self.datapaths.get(dpid)
 
-        for dpid, output_port in reverse_rules.items():
+                if datapath is not None:
+                    self.add_ipv4_flow(
+                        datapath,
+                        client_ip,
+                        self.HOST2_IP,
+                        output_port
+                    )
 
-            datapath = self.datapaths.get(dpid)
+            for dpid, output_port in reverse_rules.items():
+                datapath = self.datapaths.get(dpid)
 
-            if datapath is not None:
-                self.add_ipv4_flow(
-                    datapath,
-                    self.HOST2_IP,
-                    self.HOST1_IP,
-                    output_port
-                )
+                if datapath is not None:
+                    reverse_output = output_port
+
+                    # h1 connects to s1 port 1.
+                    # h3 connects to s1 port 4.
+                    if dpid == self.S1 and client_ip == self.HOST3_IP:
+                        reverse_output = 4
+
+                    self.add_ipv4_flow(
+                        datapath,
+                        self.HOST2_IP,
+                        client_ip,
+                        reverse_output
+                    )
 
         self.current_path = path_name
 

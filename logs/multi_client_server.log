@@ -1,0 +1,94 @@
+============================================================
+       MULTI-CLIENT RELIABLE UDP FILE SERVER
+============================================================
+[SERVER] Listening on 0.0.0.0:5000
+[SERVER] Waiting for simultaneous client transfers...
+
+
+============================================================
+[SERVER] NEW CLIENT TRANSFER
+============================================================
+[SERVER] Client: ('10.0.0.1', 41864)
+[SERVER] Transfer ID: 99d6946b
+[SERVER] File: client1.bin
+[SERVER] Size: 5242880 bytes
+[SERVER] Packets: 5243
+[SERVER] Active sessions: 1
+
+============================================================
+[SERVER] NEW CLIENT TRANSFER
+============================================================
+[SERVER] Client: ('10.0.0.3', 60210)
+[SERVER] Transfer ID: 53b45c65
+[SERVER] File: client2.bin
+[SERVER] Size: 5242880 bytes
+[SERVER] Packets: 5243
+[SERVER] Active sessions: 2
+
+============================================================
+[SERVER] FILE TRANSFER SUCCESSFUL
+============================================================
+[SERVER] Client: ('10.0.0.1', 41864)
+[SERVER] File: received_files/client1_99d6946b.bin
+[SERVER] Packets received: 5243
+[SERVER] SHA256: fe2c86a41143db6c1ef6f844fbd2367c2101195562461e4545eb14829fb14529
+[SERVER] FILE INTEGRITY: VERIFIED
+[SERVER] Completion ACK sent
+[SERVER] Active sessions: 2
+
+
+============================================================
+[SERVER] FILE TRANSFER SUCCESSFUL
+============================================================
+[SERVER] Client: ('10.0.0.3', 60210)
+[SERVER] File: received_files/client2_53b45c65.bin
+[SERVER] Packets received: 5243
+[SERVER] SHA256: 51a036546331f44acf9ff3fd95bbb602e206b6e9ae2d781f9e78ffb2829acd9c
+[SERVER] FILE INTEGRITY: VERIFIED
+[SERVER] Completion ACK sent
+[SERVER] Active sessions: 2
+
+
+============================================================
+[SERVER] NEW CLIENT TRANSFER
+============================================================
+[SERVER] Client: ('10.0.0.1', 56455)
+[SERVER] Transfer ID: 35dbbee8
+[SERVER] File: failover_client1.bin
+[SERVER] Size: 20971520 bytes
+[SERVER] Packets: 20972
+[SERVER] Active sessions: 3
+
+============================================================
+[SERVER] NEW CLIENT TRANSFER
+============================================================
+[SERVER] Client: ('10.0.0.3', 52363)
+[SERVER] Transfer ID: 0b980f13
+[SERVER] File: failover_client2.bin
+[SERVER] Size: 20971520 bytes
+[SERVER] Packets: 20972
+[SERVER] Active sessions: 4
+
+============================================================
+[SERVER] FILE TRANSFER SUCCESSFUL
+============================================================
+[SERVER] Client: ('10.0.0.1', 56455)
+[SERVER] File: received_files/failover_client1_35dbbee8.bin
+[SERVER] Packets received: 20972
+[SERVER] SHA256: c7ab758abaa6a211e540d4144dd655b94d7fc751fc452735fd687599d85a66e0
+[SERVER] FILE INTEGRITY: VERIFIED
+[SERVER] Completion ACK sent
+[SERVER] Active sessions: 4
+
+
+============================================================
+[SERVER] FILE TRANSFER SUCCESSFUL
+============================================================
+[SERVER] Client: ('10.0.0.3', 52363)
+[SERVER] File: received_files/failover_client2_0b980f13.bin
+[SERVER] Packets received: 20972
+[SERVER] SHA256: 5035167c2178669fb0fc0778e7930d91befe9404d8412b2c56616a3e56615c81
+[SERVER] FILE INTEGRITY: VERIFIED
+[SERVER] Completion ACK sent
+[SERVER] Active sessions: 4
+

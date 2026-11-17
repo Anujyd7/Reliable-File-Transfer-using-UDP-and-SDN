@@ -40,6 +40,7 @@ CONTROLLER_PORT = 6653
 
 HOST1_IP = "10.0.0.1/24"
 HOST2_IP = "10.0.0.2/24"
+HOST3_IP = "10.0.0.3/24"
 
 
 class ReliableTransferTopo(Topo):
@@ -57,6 +58,12 @@ class ReliableTransferTopo(Topo):
             "h2",
             ip=HOST2_IP,
             mac="00:00:00:00:00:02"
+        )
+
+        h3 = self.addHost(
+            "h3",
+            ip=HOST3_IP,
+            mac="00:00:00:00:00:03"
         )
 
         # Create switches with fixed datapath IDs
@@ -117,6 +124,9 @@ class ReliableTransferTopo(Topo):
             bw=50,
             delay="5ms"
         )
+
+        # Add h3 after existing links so it uses s1 port 4.
+        self.addLink(h3, s1, cls=TCLink, bw=100)
 
 
 def start_network(use_remote=False):
@@ -194,14 +204,18 @@ def start_network(use_remote=False):
 
         h1 = net.get("h1")
         h2 = net.get("h2")
+        h3 = net.get("h3")
 
         info("*** Host information\n")
         info("*** h1 IP: " + h1.IP() + "\n")
         info("*** h2 IP: " + h2.IP() + "\n")
+        info("*** h3 IP: " + h3.IP() + "\\n")
 
         # Configure static ARP entries
         h1.setARP(h2.IP(), h2.MAC())
         h2.setARP(h1.IP(), h1.MAC())
+        h3.setARP(h2.IP(), h2.MAC())
+        h2.setARP(h3.IP(), h3.MAC())
 
         info("*** Static ARP entries configured\n")
         info("*** Network topology ready\n")
